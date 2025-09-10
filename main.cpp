@@ -12,14 +12,29 @@ int main() {
     if (!file.is_open()) {
         std::cout << "File not open" << std::endl;
     }
+    std::vector<int> aRow;
     int row = 0;
     while (std::getline(file, line)) {
-        std::cout<<line<<std::endl; // remove later, this was to test if the reading of line works or not.
+
         //getting an extra 0 there for some reason, will diagnose that tomorrow.
-        for (auto i = 0; i < line.length(); i++) {
-            //need to create another vector that will store rows here
-            //then I need to push that vector onto the 2d vector. I think...
+
+        for (auto c : line) {
+            aRow.push_back(c - '0'); // - '0' converts char to int, learned this from the first search result on google...
         }
+        std::cout << "This is the data in the vector" << std::endl;
+
+
+        // The following code should push the temp vector and place it in the desired row of our 2D maze vector
+        maze.push_back(aRow);
+        aRow.clear(); // This will empty the temp vector for future use
+
+        // to see if the maze has the correct data
+
+        for (auto i: maze[row]) {
+            std::cout << i << ", ";
+        }
+        std::cout << std::endl;
+
         row++;
     }
 
