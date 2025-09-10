@@ -11,7 +11,6 @@ void printVec(const std::vector<std::pair<int, bool> > &printData) {
     std::cout << std::endl;
 }
 
-
 // This is derivative helper function that prints a 2D vector
 void printVecMaze(const std::vector<std::vector<std::pair<int, bool> >> &printData) {
     for (std::vector<std::pair<int, bool> > aRow: printData) {
