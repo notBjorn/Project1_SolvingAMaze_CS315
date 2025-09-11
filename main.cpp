@@ -4,6 +4,7 @@ int main() {
     maze aMaze;
     aMaze.importMaze("../maze.txt");
     aMaze.printMaze();
+    aMaze.printOpen();
 }
 
 /*
@@ -18,4 +19,11 @@ int main() {
  * The only way I have in mind is to create a 2D vector with the contents of the maze and position
  * Then copy it over to a new maze, whose size we know because I know what the size of the 2D vector is.
  * Doing so will help me insert the default state of the cell which is that the cell has not been transversed
+ */
+/*
+ * vector[0].at(i)==0
+ * vector[size-1].at(i)==0
+ * vector[i].at(0)==0
+ * vector[i].at(size -1) ==0
+ * if any of these is true, that element is entry/exit point
  */
