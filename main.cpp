@@ -1,55 +1,9 @@
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <utility> // for pair
-#include <string>
-// The following is a helper function that lets me print an int vector in a format I desire.
-void printVec(const std::vector<std::pair<int, bool> > &printData) {
-    for (const std::pair element: printData) {
-        std::cout << element.first << " ";
-    }
-    std::cout << std::endl;
-}
-
-// This is derivative helper function that prints a 2D vector
-void printVecMaze(const std::vector<std::vector<std::pair<int, bool> >> &printData) {
-    for (std::vector<std::pair<int, bool> > aRow: printData) {
-        printVec(aRow);
-    }
-}
-
+#include "maze.h"
 
 int main() {
-    std::ifstream file("./maze.txt"); //input file, needs to be placed in the build directory won't run otherwise
-    std::string line; // this will read and store the string output from the file line by line
-    std::vector<std::vector<std::pair<int, bool> > > maze;
-    // 2D vector that stores our maze and wheter a cell has been transversed or not
-    std::vector<std::pair<int, bool> > aRow;
-    // a helper vector which stores a row that is later pushed onto our main 2D vector
-
-    // Checks whether the file is open or not
-    if (!file.is_open()) {
-        std::cout << "File not open" << std::endl;
-    }
-
-    //While there is a line in the file, keep running
-    while (std::getline(file, line)) {
-        for (auto c: line) {
-            int data = c - '0';
-            aRow.push_back({data, true});
-            // - '0' converts char to int, learned this from the first search result on google...
-        }
-
-        maze.push_back(aRow); // push the temp vector and place it in the desired row of our 2D maze vector
-        aRow.clear(); // This will empty the temp vector for future use
-
-        //printVec(maze[row]);
-    }
-
-    printVecMaze(maze);
-
-    file.close();
-    return 0;
+    maze aMaze;
+    aMaze.importMaze("../maze.txt");
+    aMaze.printMaze();
 }
 
 /*
