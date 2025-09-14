@@ -81,30 +81,42 @@ void maze::findKeyVariables() {
     }
 }
 
+// returns true if coordinates are not out of bound
+bool maze::inBounds(int x, int y) const {
+    return x >= 0 && x <= lastXIdx && y >= 0 && y <= lastYIdx;
+}
+
+
 // checks whether the coordinate is a path or not
 bool maze::isPath(int x, int y) {
+    if (!inBounds(x, y)) return false;
     if (primeMaze[y][x].first == 1) return false;
     return true;
 }
 
 // checks if cell can be visited or not by checking if it has been visited before.
 bool maze::canVisit(int x, int y) {
+    if (!inBounds(x, y)) return false;
     if (primeMaze[y][x].second) return true;
     return false;
 }
 
 // checks whether we can travel to the designated cell
 bool maze::canTravel(int x, int y) {
+    std::cout << x << ", " << y << "\n";
+    std::cout << "check out of bounds\n";
+    if (!inBounds(x, y)) return false;
+    std::cout << "checked\n";
     // Check whether the coordinates are pathable or not
+    std::cout << "pathable\n";
     if (!isPath(x, y)) {
         return false;
     }
-    // check out of bounds, I may create a separate function for this later
-    if (x < 0 || x > lastXIdx) return false;
-    if (y < 0 || y > lastYIdx) return false;
-
+    std::cout << "checked\n";
     // Check if the cell has been visited before or not
+    std::cout << "visited\n";
     if (!canVisit(x, y)) return false;
+    std::cout << "checked\n";
 
     return true;
 }
@@ -117,36 +129,48 @@ void maze::markVisited(int x, int y) {
 
 
 void maze::solveMaze() {
-    path.push(start);
-    markVisited(start.first,start.second);
-    while (path.top() != end && !path.empty()) {
-        if (path.top() == end) {
-        }
-        if (canTravel(path.top().first + 1, path.top().second)) {
-            // Right
-            markVisited(path.top().first + 1, path.top().second);
-            path.push({path.top().first + 1, path.top().second});
-        } else if (canTravel(path.top().first - 1, path.top().second)) {
-            // Left
-            markVisited(path.top().first - 1, path.top().second);
-            path.push({path.top().first - 1, path.top().second});
-        } else if (canTravel(path.top().first, path.top().second + 1)) {
-            // Up
-            markVisited(path.top().first, path.top().second + 1);
-            path.push({path.top().first, path.top().second + 1});
-        } else if (canTravel(path.top().first, path.top().second - 1)) {
-            // Down
-            markVisited(path.top().first, path.top().second - 1);
-            path.push({path.top().first, path.top().second - 1});
-
-        } else path.pop();
+    if (start.first == -1) {
+        std::cout << "No defined Start" << std::endl;
+        return;
     }
+    path.push(start);
+    markVisited(start.first, start.second);
+    while (!path.empty() && path.top() != end) { //this was a huge pain, I had the path.top befrore path.empty
+        int x = path.top().first;
+        int y = path.top().second;
+        std::cout <<"curr: "<< x << ", " << y << std::endl;
+        if (canTravel(x + 1, y)) {
+            // Right
+            std::cout << "right\n";
+            markVisited(x + 1, y);
+            path.push({x + 1, y});
+        } else if (canTravel(x - 1, y)) {
+            // Left
+            std::cout << "left\n";
+            markVisited(x - 1, y);
+            path.push({x - 1, y});
+        } else if (canTravel(x, y + 1)) {
+            // Up
+            std::cout << "up\n";
+            markVisited(x, y + 1);
+            path.push({x, y + 1});
+        } else if (canTravel(x, y - 1)) {
+            // Down
+            std::cout << "down\n";
+            markVisited(x, y - 1);
+            path.push({x, y - 1});
+        } else {
+            std::cout << "popped\n";
+            path.pop();
+        }
+    }
+    std::cout<< "solve works???\n";
 }
 
 
 void maze::createSolutionMaze() {
     if (path.empty()) {
-        std::cout << "The Maze has no solution";
+        std::cout << "The Maze has no solution" << std::endl;
         return;
     }
     // copy the data we need from the primeMaze to the solved maze to make printing easier
@@ -175,7 +199,7 @@ void maze::printSolution() {
 
     for (auto row: solvedMaze) {
         for (auto cell: row) {
-            std::cout << cell <<" ";
+            std::cout << cell << " ";
         }
         std::cout << std::endl;
     }

@@ -25,7 +25,8 @@ private:
     std::vector<std::vector<char> > solvedMaze;
     std::stack<std::pair<int, int>> path;
     std::size_t lastXIdx,  lastYIdx;
-    std::pair<int, int> start, end;
+    std::pair<int, int> start = {-1, -1};
+    std::pair<int, int> end = {-1, -1};
 
 
     void markVisited(int, int);
@@ -33,4 +34,5 @@ private:
     bool canTravel (int, int);
     bool canVisit(int, int);
     void findKeyVariables();  // a helper functions that goes through the maze and finds the key variables in the maze
+    bool inBounds(int x, int y) const;
 };
