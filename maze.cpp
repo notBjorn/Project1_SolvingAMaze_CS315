@@ -9,7 +9,7 @@ void maze::importMaze(const std::string &filename) {
     std::string line; // used for reading file data
     std::vector<std::pair<int, bool> > aRow; // temp vector used to push data into the 2D vector
 
-    // check wheter the file is open or not
+    // check whether the file is open or not
     if (!file.is_open()) {
         std::cout << "File not open" << std::endl;
     }
@@ -25,7 +25,7 @@ void maze::importMaze(const std::string &filename) {
         aRow.clear(); // This will empty the temp vector for future use
     }
 
-    findOpening();
+    findKeyVariables();
 
     file.close();
 }
@@ -42,19 +42,21 @@ void maze::printMaze() {
     std::cout << std::endl;
 }
 
-void maze::findOpening() {
-    if (vMaze.empty())
-        return;
+// The following functions analyzes the maze vector to find all the key coordinates and variables like the start and end
+// points of a maze, and what are the bounds of the maze.
+void maze::findKeyVariables() {
+    std::vector<std::pair<int, int> > openings; // temp vector with the openings
 
-    int lastXIdx = vMaze[0].size() - 1;
-    int lastYIdx = vMaze.size() - 1;
+    if (vMaze.empty()) return;
+
+    lastXIdx = vMaze[0].size() - 1;
+    lastYIdx = vMaze.size() - 1;
 
     // This loops checks if there is a pathable cell in the top or bottom row, if there is one then it pushes it onto the openings vector
     for (int i = 0; i <= lastXIdx; i++) {
         if (isPath(i, 0)) {
             openings.push_back({i, 0});
         }
-
         if (isPath(i, lastYIdx)) {
             openings.push_back({i, lastYIdx});
         }
@@ -69,19 +71,40 @@ void maze::findOpening() {
             openings.push_back({lastXIdx, i});
         }
     }
-}
 
-// index as the input
-bool maze::isPath(int x, int y) {
-    if (vMaze[y][x].first == 1)
-        return false;
-    else if (vMaze[y][x].first == 0)
-        return true;
-}
-
-
-void maze::printOpen() {
-    for (std::pair<int, int> i: openings) {
-        std::cout << i.first << ", " << i.second << std::endl;
+    // The following statement checks whether we have enough data for start and end, if we do store the data into those variables.
+    if (openings.size() >= 2) {
+        start = openings.at(0);
+        end = openings.at(1);
+    } else {
+        std::cout << "no valid start/end" << std::endl;
     }
+}
+
+// checks whether the coordinate is a path or not
+bool maze::isPath(int x, int y) {
+    if (vMaze[y][x].first == 1) return false;
+    return true;
+}
+
+// checks if cell can be visited or not by checking if it has been visited before.
+bool maze::canVisit(int x, int y) {
+    if (vMaze[y][x].second) return true;
+    return false;
+}
+
+// checks whether we can travel to the designated cell
+bool maze::canTravel(int x, int y) {
+    // Check whether the coordinates are pathable or not
+    if (!isPath(x, y)) {
+        return false;
+    }
+    // check out of bounds, I may create a separate function for this later
+    if (x < 0 || x > lastXIdx) return false;
+    if (y < 0 || y > lastYIdx) return false;
+
+    // Check if the cell has been visited before or not
+    if (!canVisit(x, y)) return false;
+
+    return true;
 }
