@@ -21,7 +21,7 @@ void maze::importMaze(const std::string &filename) {
             // - '0' converts char to int, learned this from the first search result on google...
         }
 
-        vMaze.push_back(aRow); // push the temp vector and place it in the desired row of our 2D maze vector
+        primeMaze.push_back(aRow); // push the temp vector and place it in the desired row of our 2D maze vector
         aRow.clear(); // This will empty the temp vector for future use
     }
 
@@ -33,7 +33,7 @@ void maze::importMaze(const std::string &filename) {
 
 void maze::printMaze() {
     for (std::vector<std::pair<int, bool> >
-         &aRow: vMaze) {
+         &aRow: primeMaze) {
         for (const std::pair element: aRow) {
             std::cout << element.first << " ";
         }
@@ -47,10 +47,10 @@ void maze::printMaze() {
 void maze::findKeyVariables() {
     std::vector<std::pair<int, int> > openings; // temp vector with the openings
 
-    if (vMaze.empty()) return;
+    if (primeMaze.empty()) return;
 
-    lastXIdx = vMaze[0].size() - 1;
-    lastYIdx = vMaze.size() - 1;
+    lastXIdx = primeMaze[0].size() - 1;
+    lastYIdx = primeMaze.size() - 1;
 
     // This loops checks if there is a pathable cell in the top or bottom row, if there is one then it pushes it onto the openings vector
     for (int i = 0; i <= lastXIdx; i++) {
@@ -83,13 +83,13 @@ void maze::findKeyVariables() {
 
 // checks whether the coordinate is a path or not
 bool maze::isPath(int x, int y) {
-    if (vMaze[y][x].first == 1) return false;
+    if (primeMaze[y][x].first == 1) return false;
     return true;
 }
 
 // checks if cell can be visited or not by checking if it has been visited before.
 bool maze::canVisit(int x, int y) {
-    if (vMaze[y][x].second) return true;
+    if (primeMaze[y][x].second) return true;
     return false;
 }
 
@@ -107,4 +107,76 @@ bool maze::canTravel(int x, int y) {
     if (!canVisit(x, y)) return false;
 
     return true;
+}
+
+void maze::markVisited(int x, int y) {
+    if (primeMaze[y][x].second) {
+        primeMaze[y].at(x).second = false;
+    }
+}
+
+
+void maze::solveMaze() {
+    path.push(start);
+    markVisited(start.first,start.second);
+    while (path.top() != end && !path.empty()) {
+        if (path.top() == end) {
+        }
+        if (canTravel(path.top().first + 1, path.top().second)) {
+            // Right
+            markVisited(path.top().first + 1, path.top().second);
+            path.push({path.top().first + 1, path.top().second});
+        } else if (canTravel(path.top().first - 1, path.top().second)) {
+            // Left
+            markVisited(path.top().first - 1, path.top().second);
+            path.push({path.top().first - 1, path.top().second});
+        } else if (canTravel(path.top().first, path.top().second + 1)) {
+            // Up
+            markVisited(path.top().first, path.top().second + 1);
+            path.push({path.top().first, path.top().second + 1});
+        } else if (canTravel(path.top().first, path.top().second - 1)) {
+            // Down
+            markVisited(path.top().first, path.top().second - 1);
+            path.push({path.top().first, path.top().second - 1});
+
+        } else path.pop();
+    }
+}
+
+
+void maze::createSolutionMaze() {
+    if (path.empty()) {
+        std::cout << "The Maze has no solution";
+        return;
+    }
+    // copy the data we need from the primeMaze to the solved maze to make printing easier
+    for (const auto &row: primeMaze) {
+        std::vector<char> aRow;
+        for (const auto &cell: row) {
+            if (cell.first == 0)
+                aRow.push_back('0');
+            else
+                aRow.push_back('1');
+        }
+        solvedMaze.push_back(aRow);
+    }
+    while (!path.empty()) {
+        int x = path.top().first;
+        int y = path.top().second;
+        solvedMaze[y].at(x) = ' ';
+        path.pop();
+    }
+}
+
+
+void maze::printSolution() {
+    if (solvedMaze.empty())
+        std::cout << "No Solution" << std::endl;
+
+    for (auto row: solvedMaze) {
+        for (auto cell: row) {
+            std::cout << cell <<" ";
+        }
+        std::cout << std::endl;
+    }
 }
