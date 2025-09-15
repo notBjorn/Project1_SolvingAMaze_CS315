@@ -15,21 +15,25 @@ public:
     void importMaze(const std::string &filename); // a function to translate the text file to maze file
     void printMaze(); // print the maze
     void solveMaze();
+
     void printSolution();
 
 private:
     std::vector<std::vector<std::pair<int, bool> > > primeMaze; // the vector that will store the maze
     std::vector<std::vector<char> > solvedMaze;
-    std::stack<std::pair<int, int>> path;
-    std::size_t lastXIdx,  lastYIdx;
+    std::stack<std::pair<int, int> > path;
+    std::size_t lastXIdx, lastYIdx;
     std::pair<int, int> start = {-1, -1};
     std::pair<int, int> end = {-1, -1};
 
-
     void markVisited(int, int);
-    bool isPath(int, int); // a helper function that lets us check if the cell is pathable or not
-    bool canTravel (int, int);
-    bool canVisit(int, int);
-    void findKeyVariables();  // a helper functions that goes through the maze and finds the key variables in the maze
+
     bool inBounds(int x, int y) const;
+    bool isPath(int, int); // a helper function that lets us check if the cell is pathable or not
+    bool canVisit(int, int);
+    bool canTravel(int, int);
+
+
+    void findKeyVariables(); // a helper functions that goes through the maze and finds the key variables in the maze
+
 };

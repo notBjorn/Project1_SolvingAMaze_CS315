@@ -30,18 +30,6 @@ void maze::importMaze(const std::string &filename) {
     file.close();
 }
 
-
-void maze::printMaze() {
-    for (std::vector<std::pair<int, bool> >
-         &aRow: primeMaze) {
-        for (const std::pair element: aRow) {
-            std::cout << element.first << " ";
-        }
-        std::cout << std::endl;
-    }
-    std::cout << std::endl;
-}
-
 // The following functions analyzes the maze vector to find all the key coordinates and variables like the start and end
 // points of a maze, and what are the bounds of the maze.
 void maze::findKeyVariables() {
@@ -180,6 +168,17 @@ void maze::solveMaze() {
         solvedMaze[y].at(x) = ' ';
         path.pop();
     }
+}
+
+void maze::printMaze() {
+    for (std::vector<std::pair<int, bool> >
+         &aRow: primeMaze) {
+        for (const std::pair element: aRow) {
+            std::cout << element.first << " ";
+        }
+        std::cout << std::endl;
+         }
+    std::cout << std::endl;
 }
 
 

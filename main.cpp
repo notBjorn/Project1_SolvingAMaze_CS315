@@ -1,14 +1,13 @@
 #include "maze.h"
 
 int main() {
-    std::cout << "START" << std::endl;
+    //std::cout << "START" << std::endl;
     maze aMaze;
-    aMaze.importMaze("maze.txt");
-    //std::cout << "importing Successful" << std::endl;
+    aMaze.importMaze("maze.txt"); //change this if you want it to run in clion
+    //clion looks for the file in build, so to access the file we need to exit from build
+    // ../maze.txt does that
     aMaze.printMaze();
-   // std::cout << "printing Successful" << std::endl;
     aMaze.solveMaze();
-    //std::cout << "solving Successful" << std::endl;
     aMaze.printSolution();
-    std::cout << "END" << std::endl;
+   // std::cout << "END" << std::endl;
 }
