@@ -3,7 +3,7 @@
 int main() {
     std::cout << "START" << std::endl;
     maze aMaze;
-    aMaze.importMaze("../maze.txt");
+    aMaze.importMaze("maze.txt");
     //std::cout << "importing Successful" << std::endl;
     aMaze.printMaze();
    // std::cout << "printing Successful" << std::endl;
