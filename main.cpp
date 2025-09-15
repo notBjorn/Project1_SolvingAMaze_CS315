@@ -1,15 +1,14 @@
 #include "maze.h"
 
 int main() {
+    std::cout << "START" << std::endl;
     maze aMaze;
     aMaze.importMaze("../maze.txt");
-    std::cout << "importing Successful" << std::endl;
+    //std::cout << "importing Successful" << std::endl;
     aMaze.printMaze();
-    std::cout << "printing Successful" << std::endl;
+   // std::cout << "printing Successful" << std::endl;
     aMaze.solveMaze();
-    std::cout << "solving Successful" << std::endl;
-    aMaze.createSolutionMaze();
-    std::cout << "solution maze creation Successful" << std::endl;
+    //std::cout << "solving Successful" << std::endl;
     aMaze.printSolution();
-    std::cout << "Printing Solution Successful" << std::endl;
+    std::cout << "END" << std::endl;
 }

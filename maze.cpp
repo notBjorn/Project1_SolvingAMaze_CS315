@@ -103,24 +103,17 @@ bool maze::canVisit(int x, int y) {
 
 // checks whether we can travel to the designated cell
 bool maze::canTravel(int x, int y) {
-    std::cout << x << ", " << y << "\n";
-    std::cout << "check out of bounds\n";
+    // Check whether the coordinates are inBounds or not
     if (!inBounds(x, y)) return false;
-    std::cout << "checked\n";
     // Check whether the coordinates are pathable or not
-    std::cout << "pathable\n";
-    if (!isPath(x, y)) {
-        return false;
-    }
-    std::cout << "checked\n";
+    if (!isPath(x, y)) return false;
     // Check if the cell has been visited before or not
-    std::cout << "visited\n";
     if (!canVisit(x, y)) return false;
-    std::cout << "checked\n";
 
     return true;
 }
 
+// marks the coordinates as visited
 void maze::markVisited(int x, int y) {
     if (primeMaze[y][x].second) {
         primeMaze[y].at(x).second = false;
@@ -129,51 +122,46 @@ void maze::markVisited(int x, int y) {
 
 
 void maze::solveMaze() {
+    // Checks whether there is a proper start or not
     if (start.first == -1) {
-        std::cout << "No defined Start" << std::endl;
+        std::cout << "No defined Start or End" << std::endl;
         return;
     }
-    path.push(start);
-    markVisited(start.first, start.second);
-    while (!path.empty() && path.top() != end) { //this was a huge pain, I had the path.top befrore path.empty
+
+    path.push(start); // pushes the starting point onto the stack
+    markVisited(start.first, start.second); // marks the starting point as visited
+
+    //loops until the stack is empty or until the target/end is reached
+    while (!path.empty() && path.top() != end) {
         int x = path.top().first;
         int y = path.top().second;
-        std::cout <<"curr: "<< x << ", " << y << std::endl;
+
+        // checks and travels to a valid cell. order of movement is Right, left, up and down
         if (canTravel(x + 1, y)) {
-            // Right
-            std::cout << "right\n";
             markVisited(x + 1, y);
             path.push({x + 1, y});
         } else if (canTravel(x - 1, y)) {
-            // Left
-            std::cout << "left\n";
             markVisited(x - 1, y);
             path.push({x - 1, y});
         } else if (canTravel(x, y + 1)) {
-            // Up
-            std::cout << "up\n";
             markVisited(x, y + 1);
             path.push({x, y + 1});
         } else if (canTravel(x, y - 1)) {
-            // Down
-            std::cout << "down\n";
             markVisited(x, y - 1);
             path.push({x, y - 1});
         } else {
-            std::cout << "popped\n";
-            path.pop();
+            path.pop(); // if can't move pop from the stack
         }
     }
-    std::cout<< "solve works???\n";
-}
 
-
-void maze::createSolutionMaze() {
+    // If the path is empty that means that there is no solution
     if (path.empty()) {
         std::cout << "The Maze has no solution" << std::endl;
         return;
     }
-    // copy the data we need from the primeMaze to the solved maze to make printing easier
+    std::cout << "The maze has been solved" << std::endl;
+
+    // create a copy of the primeMaze to the solved maze with just chars
     for (const auto &row: primeMaze) {
         std::vector<char> aRow;
         for (const auto &cell: row) {
@@ -184,6 +172,8 @@ void maze::createSolutionMaze() {
         }
         solvedMaze.push_back(aRow);
     }
+
+    // Edit the copied maze with the solution
     while (!path.empty()) {
         int x = path.top().first;
         int y = path.top().second;
@@ -194,8 +184,10 @@ void maze::createSolutionMaze() {
 
 
 void maze::printSolution() {
-    if (solvedMaze.empty())
-        std::cout << "No Solution" << std::endl;
+    if (solvedMaze.empty()) {
+        std::cout << "No Solution to print, call the solveMaze function before calling print" << std::endl;
+        return;
+    }
 
     for (auto row: solvedMaze) {
         for (auto cell: row) {
